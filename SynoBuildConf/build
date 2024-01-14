@@ -104,7 +104,7 @@ kconfig_generate
 INFO "Copying signing_key and certification from build system"
 build_certification
 
-build_public_key
+# build_public_key
 build_seed
 build_version
 
