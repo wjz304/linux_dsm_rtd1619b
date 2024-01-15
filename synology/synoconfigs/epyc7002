@@ -1570,7 +1570,7 @@ CONFIG_SYNO_BIOS_ACPI_FPDT=y
 # Synology Protection
 #
 # CONFIG_SYNO_RAMDISK_INTEGRITY_CHECK is not set
-CONFIG_SYNO_KEXEC_TEST=y
+# CONFIG_SYNO_KEXEC_TEST is not set
 # end of Synology Protection
 
 CONFIG_RT_MUTEXES=y

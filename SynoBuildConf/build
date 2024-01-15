@@ -105,7 +105,7 @@ kconfig_generate
 # build_certification
 
 # build_public_key
-build_seed
+# build_seed
 build_version
 
 INFO "Build Synology linux kernel $(make -s kernelversion)"

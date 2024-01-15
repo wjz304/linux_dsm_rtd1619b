@@ -950,9 +950,9 @@ void __init setup_arch(char **cmdline_p)
 
 	x86_report_nx();
 
-#ifdef MY_ABC_HERE
+#ifdef CONFIG_SYNO_KEXEC_TEST
 	syno_kexec_test_init();
-#endif /* MY_ABC_HERE */
+#endif /* CONFIG_SYNO_KEXEC_TEST */
 
 	/* after early param, so could get panic from serial */
 	memblock_x86_reserve_range_setup_data();
