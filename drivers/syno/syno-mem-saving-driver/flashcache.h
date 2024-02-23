@@ -35,7 +35,7 @@
 #include "syno_common_tool.h"
 #include "syno_common_4k_driver.h"
 
-#define SYNO_VERSION_NAME "v25-pin-file""-"TIME
+#define SYNO_VERSION_NAME "v25-pin-file"
 
 #ifdef __KERNEL__
 
