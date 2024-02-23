@@ -4859,6 +4859,12 @@ CONFIG_NVMEM_SYSFS=y
 # CONFIG_INTERCONNECT is not set
 # CONFIG_COUNTER is not set
 # CONFIG_MOST is not set
+
+#
+# Synology
+#
+CONFIG_SYNO_DM_FLASHCACHE=m
+# end of Synology
 # end of Device Drivers
 
 #
