@@ -1,8 +1,7 @@
-include /env.mak
+ccflags-y := -DSYNO_PLATFORM=\"EPYC7002\"
+obj-$(CONFIG_SYNO_SYNOBIOS) += synobios.o
 
-obj-m += epyc7002-synobios.o
-
-epyc7002-synobios-objs = \
+synobios-objs = \
 	../common/common.o \
 	../syno_ttyS/syno_ttyS.o \
 	../synobios.o \

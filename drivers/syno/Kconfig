@@ -6,4 +6,8 @@ config SYNO_DM_FLASHCACHE
 	depends on BLK_DEV_DM
 	default n
 
+config SYNO_SYNOBIOS
+	tristate "synobios"
+	default n
+
 endmenu
