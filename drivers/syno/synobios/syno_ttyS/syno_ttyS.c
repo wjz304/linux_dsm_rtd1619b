@@ -470,7 +470,7 @@ END:
 
 int synobios_lock_ttyS_write_and_read(char *szBuf, int size)
 {
-	int ret = -1, write_waiting = 0;
+	int ret = -1;
 	LIST_HEAD(micropReadNode);
 
 	mutex_lock(&micropReadList.readListLock);
@@ -523,7 +523,7 @@ END:
 EXPORT_SYMBOL(synobios_lock_ttyS_protection);
 
 int synobios_lock_ttyS_current(char *szCommand, char *szBuf) {
-	int ret = -1, len = 0, index = 0, write_waiting = 0;
+	int ret = -1, len = 0, index = 0;
 	LIST_HEAD(microp_waiting_read);
 
 	if (NULL == szCommand || NULL == szBuf) {

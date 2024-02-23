@@ -1645,7 +1645,7 @@ static long synobios_ioctl (struct file *filp,
 				if (synobios_ops->write_memory) {
 					ret = synobios_ops->write_memory(&mem_access);
 				} else {
-					MEM_WRITE((void *) mem_access.addr, mem_access.value);
+					MEM_WRITE((void *)(uintptr_t)mem_access.addr, mem_access.value);
 					ret = 0;
 				}
 				break;
@@ -1662,7 +1662,7 @@ static long synobios_ioctl (struct file *filp,
 				if (synobios_ops->read_memory) {
 					ret = synobios_ops->read_memory(&mem_access);
 				} else {
-					mem_access.value = MEM_READ((void *) mem_access.addr);
+					mem_access.value = MEM_READ((void *)(uintptr_t)mem_access.addr);
 					ret = 0;
 				}
 
