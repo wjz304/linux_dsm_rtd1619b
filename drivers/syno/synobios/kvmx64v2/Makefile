@@ -1,8 +1,8 @@
-include /env.mak
+ccflags-y := -DSYNO_PLATFORM=\"KVMX64V2\"
 
-obj-m += kvmx64v2-synobios.o
+obj-$(CONFIG_SYNO_SYNOBIOS) += synobios.o
 
-kvmx64v2-synobios-objs = \
+synobios-objs = \
 	$(vdsm-common-obj) \
 	virtualdsm.o \
 	kvmx64v2_common.o
