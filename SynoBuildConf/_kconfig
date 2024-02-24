@@ -60,7 +60,7 @@ kconfig_check_syno_macro()
     # toolchain: epyc7002-gcc1220_glibc236_x86_64-GPL (Not used)
     if find . \( -path './.git' -o -path './SynoBuildConf' -o -path './ds.*' -o -path './drivers/syno' \) -prune -o -type f -exec \
         grep -roE "((ifdef)|(defined))[[:space:]]*\(?SYNO([[:alnum:]]|_)*" {} + \
-		| grep -v SYNO_EXPORT_CONFIG; then
+		| grep -v -e SYNO_EXPORT_CONFIG -e SYNO_FS_SYNO_ACL; then
         ERROR "all syno macros should start with prefix SYNO_"
         return 1
     fi
