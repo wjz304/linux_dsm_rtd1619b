@@ -2019,6 +2019,73 @@ static SYNO_CRYPTO_MAPPING gSynoCRYPTOMapping[] = {
 	{CRYPTO_HW_NONE,    "none"}
 };
 
+#define CPU_MODEL_SZ 80
+static char cpu_model_synofmt[CPU_MODEL_SZ] = "";
+
+static bool string_ends_with(const char *str, const char *suffix)
+{
+	size_t str_len, suffix_len;
+
+	if (!str || !suffix) {
+		return false;
+	}
+
+	str_len = strlen(str);
+	suffix_len = strlen(suffix);
+
+	if (str_len < suffix_len) {
+		return false;
+	}
+
+	return strcmp(str + str_len - suffix_len, suffix) == 0;
+}
+
+static void synobios_detect_cpu_model(void)
+{
+	char *p, *cpu_model, *cpu_model_orig;
+	int part = 0, written = 0;
+
+	cpu_model_orig = cpu_model =
+		kstrdup(boot_cpu_data.x86_model_id, GFP_KERNEL);
+	if (unlikely(!cpu_model))
+		return;
+
+	pr_info("%s: model name: %s, nr_cpu_ids: %d\n", __func__, cpu_model,
+		nr_cpu_ids);
+
+	while ((p = strsep(&cpu_model, " "))) {
+		if (!*p)
+			continue;
+
+		if (*p == '@' || *p == '-' || strcmp(p, "with") == 0 ||
+		    strcmp(p, "w/") == 0)
+			break;
+		if (strcmp(p, "CPU") == 0 || strcmp(p, "Genuine") == 0 ||
+		    strcmp(p, "Processor") == 0 ||
+		    strcmp(p, "processor") == 0 || strcmp(p, "Gen") == 0 ||
+		    string_ends_with(p, "th") || strstr(p, "-Core") != NULL)
+			continue;
+
+		if (part > 0) {
+			if (part < 3)
+				written +=
+					scnprintf(cpu_model_synofmt + written,
+						  CPU_MODEL_SZ - written, ",");
+			written += scnprintf(cpu_model_synofmt + written,
+					     CPU_MODEL_SZ - written, " ");
+		}
+		written += scnprintf(cpu_model_synofmt + written,
+				     CPU_MODEL_SZ - written, "%s", p);
+		++part;
+	}
+	while (++part < 4)
+		written += scnprintf(cpu_model_synofmt + written,
+				     CPU_MODEL_SZ - written, ", Processor");
+	written += scnprintf(cpu_model_synofmt + written,
+			     CPU_MODEL_SZ - written, ", %u", nr_cpu_ids);
+
+	kfree(cpu_model_orig);
+}
 
 #if SYNO_HAVE_KERNEL_VERSION(3,10,0)
 static int synobios_read_proc_cpu_arch(struct seq_file *m, void *v)
@@ -2029,6 +2096,8 @@ static int synobios_read_proc_cpu_arch(char *page, char **start, off_t off,
 {
 	int len = 0;
 	SYNO_CPU_MAPPING *p_cpu_mapping = NULL;
+	static SYNO_CPU_MAPPING cpu_mapping = { .cpu_number =
+							cpu_model_synofmt };
 	module_t *syno_module = module_type_get();
 	if (!syno_module) {
 		printk("get cpu arch information failed\n");
@@ -2041,6 +2110,10 @@ static int synobios_read_proc_cpu_arch(char *page, char **start, off_t off,
 			break;
 		p_cpu_mapping++;
 	}
+
+	if (CPU_UNKNOWN == p_cpu_mapping->id && *cpu_model_synofmt)
+		p_cpu_mapping = &cpu_mapping;
+
 #if SYNO_HAVE_KERNEL_VERSION(4,4,0)
 	seq_printf(m, "%s\n", p_cpu_mapping->cpu_number);
 #elif SYNO_HAVE_KERNEL_VERSION(3,10,0)
@@ -2080,6 +2153,8 @@ static int synobios_add_proc_cpu_arch(void)
 {
 	struct proc_dir_entry *synobios_proc_entry;
 
+	if (boot_cpu_data.x86_model_id[0])
+		synobios_detect_cpu_model();
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,5,0)
 	synobios_proc_entry =  proc_create_data("syno_cpu_arch", 0444, NULL,
